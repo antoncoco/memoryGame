@@ -1,0 +1,86 @@
+:root{
+  --title-bgcolor: rgb(19, 19, 19);
+  --title-fontfamily: Arial, Helvetica, sans-serif;
+  --title-fontsize: min(1.8em, max(1em, 3.5vmax));
+
+  --button-color: rgb(66, 66, 235);
+}
+
+body{
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+}
+
+.title{
+  margin: 0 0 15px;
+  padding: 10px 0;
+  background-color: var(--title-bgcolor);
+  color: white;
+  font-family: var(--title-fontfamily);
+  font-size: var(--title-fontsize);
+  text-align: center;
+}
+
+.board{
+  display: grid;
+  margin: 20px auto;
+  width: calc(100vw - 5vmax);
+  max-width: 800px;
+  grid: auto-flow 150px / repeat(4, 1fr);
+  gap: 10px;
+  justify-items: center;
+  justify-content: center;
+}
+
+.board__card-container{
+  perspective: 750px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.card{
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  transform-style: preserve-3d;
+  transition: all 0.5s ease;
+}
+
+.card:hover{
+  transform: rotateY(180deg);
+}
+
+.card__front,
+.card__back{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+} 
+
+.card__front{
+  background-color: black;
+  background-image: url("../assets/images/starwars.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.card__back{
+  background-color: blue;
+  transform: rotateY(180deg);
+}
+
+.button{
+  display: block;
+  margin: 0 auto;
+  border-style: none;
+  border-radius: 5px;
+  background-color: var(--button-color);
+  color: white;
+  font-size: 1em;
+  padding: 10px;
+  cursor: pointer;
+}
