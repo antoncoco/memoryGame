@@ -48,9 +48,10 @@ body{
   transform-style: preserve-3d;
   transition: all 0.5s ease;
   border: 1px solid gray;
+  cursor: pointer;
 }
 
-.card:hover{
+.card-hover{
   transform: rotateY(180deg);
 }
 
@@ -71,7 +72,7 @@ body{
 }
 
 .card__back{
-  background-color: blue;
+  background-color: gainsboro;
   transform: rotateY(180deg);
 }
 
