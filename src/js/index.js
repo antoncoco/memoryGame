@@ -1,8 +1,15 @@
 import { getDog } from "../helpers/getDog.js";
 const board = document.querySelector(".board");
+const games = document.querySelector(".games__number");
+const wins = document.querySelector(".wins__number");
 /*NUMBER_CARDS needs to be an even number */
 const NUMBER_CARDS = 12;
 const imagesCards = [];
+
+let cardPairs = [];
+let countPairsFound = 0;
+let numberWins = 0;
+let numberGames = 0;
 
 function generateCard(image){
   const cardContainer = document.createElement("div");
@@ -16,20 +23,56 @@ function generateCard(image){
 
   const cardBack = document.createElement("div");
   cardBack.classList.add("card__back");
-  cardBack.style.backgroundImage = `url(${image})`;
+  cardBack.setAttribute("number", image.number);
+  cardBack.style.backgroundImage = `url(${image.value})`;
   cardBack.style.backgroundSize = "cover";
   cardBack.style.backgroundPosition = "center";
   cardBack.style.backgroundRepeat = "no-repeat";
 
   card.appendChild(cardFront);
   card.appendChild(cardBack);
-  card.addEventListener("click", function(){
-    this.classList.toggle("card-hover");
-  });
+  card.addEventListener("click", logicGame);
 
   cardContainer.appendChild(card);
 
   board.appendChild(cardContainer);
+  games.innerText = numberGames;
+  wins.innerText = numberWins;
+}
+
+async function logicGame(evt){
+  this.classList.toggle("card-hover");
+  await new Promise(resolve => setTimeout(resolve, 500));
+  cardPairs.push(this);
+  if(cardPairs.length === 2){
+    const cardBack1 = cardPairs[0].childNodes[1];
+    const cardBack2 = cardPairs[1].childNodes[1];
+    if(compareCards(cardBack1, cardBack2)){
+      cardPairs[0].removeEventListener("click", logicGame);
+      cardPairs[1].removeEventListener("click", logicGame);
+      countPairsFound++;
+      if(countPairsFound == Math.floor(NUMBER_CARDS / 2)){
+        numberGames++;
+        numberWins++;
+        games.innerText = numberGames;
+        wins.innerText = numberWins;
+      }
+    }else{
+      cardPairs[0].classList.remove("card-hover");
+      cardPairs[1].classList.remove("card-hover");
+    }
+    cardPairs = [];
+  }
+}
+
+function compareCards(cardBack1, cardBack2) {
+  return (
+    cardBack1.style.backgroundImage === cardBack2.style.backgroundImage
+    && (
+      cardBack1.getAttribute("number") == 1 && cardBack2.getAttribute("number") == 2
+      || cardBack1.getAttribute("number") == 2 && cardBack2.getAttribute("number") == 1
+    )
+  )
 }
 
 window.onload = async() => {
@@ -53,7 +96,13 @@ async function generateRandomAssignment() {
   for(let i = 0; i < middle; i++){
     await getRandomImage();
   }
-  const duplicatedImages = imagesCards.reduce((acc, curr) => [...acc, curr, curr], []);
+  const duplicatedImages = imagesCards.reduce(
+    (acc, curr) => [
+      ...acc, 
+      {value: curr, number: 1}, 
+      {value: curr, number: 2}
+    ], []
+  );
 
   const imagesInRandomOrder = duplicatedImages
     .map(image => ({data: image, random: Math.random()}))
