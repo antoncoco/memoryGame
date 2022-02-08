@@ -1,13 +1,24 @@
 import { getDog } from "../helpers/getDog.js";
 const board = document.querySelector(".board");
 const wins = document.querySelector(".wins__number");
+const buttonRestartGame = document.querySelector(".score__new-game");
 /*NUMBER_CARDS needs to be an even number */
 const NUMBER_CARDS = 12;
-const imagesCards = [];
+let imagesCards = [];
 
 let cardPairs = [];
 let countPairsFound = 0;
 let numberWins = 0;
+
+buttonRestartGame.addEventListener("click", () => {
+  const cards = document.getElementsByClassName("card");
+  for (const card of cards) {
+    card.classList.remove("card-hover");
+    card.addEventListener("click", logicGame);
+  }
+  cardPairs = [];
+  countPairsFound = 0;
+});
 
 function generateCard(image){
   const cardContainer = document.createElement("div");
@@ -53,6 +64,13 @@ async function logicGame(evt){
       if(countPairsFound == Math.floor(NUMBER_CARDS / 2)){
         numberWins++;
         wins.innerText = numberWins;
+        await new Promise(resolve => setTimeout(resolve, 500));
+        while(board.hasChildNodes()){
+          board.firstChild.remove();
+        }
+        imagesCards = [];
+        countPairsFound = 0;
+        await generateBoard();
       }
     }else{
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -73,12 +91,14 @@ function compareCards(cardBack1, cardBack2) {
   )
 }
 
-window.onload = async() => {
+async function generateBoard(){
   const images = await generateRandomAssignment();
   for(let i = 0; i < NUMBER_CARDS; i++){
     generateCard(images[i]);
   }
-};
+}
+
+window.onload = generateBoard;
 
 async function getRandomImage(){
   try {
