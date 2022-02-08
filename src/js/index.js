@@ -1,6 +1,5 @@
 import { getDog } from "../helpers/getDog.js";
 const board = document.querySelector(".board");
-const games = document.querySelector(".games__number");
 const wins = document.querySelector(".wins__number");
 /*NUMBER_CARDS needs to be an even number */
 const NUMBER_CARDS = 12;
@@ -9,7 +8,6 @@ const imagesCards = [];
 let cardPairs = [];
 let countPairsFound = 0;
 let numberWins = 0;
-let numberGames = 0;
 
 function generateCard(image){
   const cardContainer = document.createElement("div");
@@ -36,14 +34,15 @@ function generateCard(image){
   cardContainer.appendChild(card);
 
   board.appendChild(cardContainer);
-  games.innerText = numberGames;
   wins.innerText = numberWins;
 }
 
 async function logicGame(evt){
-  this.classList.toggle("card-hover");
-  await new Promise(resolve => setTimeout(resolve, 500));
+  if(cardPairs.length >= 2){
+    return;
+  }
   cardPairs.push(this);
+  this.classList.toggle("card-hover");
   if(cardPairs.length === 2){
     const cardBack1 = cardPairs[0].childNodes[1];
     const cardBack2 = cardPairs[1].childNodes[1];
@@ -52,12 +51,11 @@ async function logicGame(evt){
       cardPairs[1].removeEventListener("click", logicGame);
       countPairsFound++;
       if(countPairsFound == Math.floor(NUMBER_CARDS / 2)){
-        numberGames++;
         numberWins++;
-        games.innerText = numberGames;
         wins.innerText = numberWins;
       }
     }else{
+      await new Promise(resolve => setTimeout(resolve, 500));
       cardPairs[0].classList.remove("card-hover");
       cardPairs[1].classList.remove("card-hover");
     }
