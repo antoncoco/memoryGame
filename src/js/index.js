@@ -91,8 +91,25 @@ function compareCards(cardBack1, cardBack2) {
   )
 }
 
+function createLoader(){
+  const loader = document.createElement("div");
+  loader.classList.add("loader");
+  for(let i = 0; i < 3; i++){
+    insertCircle(loader);
+  }
+  document.querySelector("body").appendChild(loader);
+}
+
+function insertCircle(target){
+  const circle = document.createElement("div");
+  circle.classList.add("circle");
+  target.appendChild(circle);
+}
+
 async function generateBoard(){
+  createLoader();
   const images = await generateRandomAssignment();
+  document.querySelector("body").lastElementChild.remove();
   for(let i = 0; i < NUMBER_CARDS; i++){
     generateCard(images[i]);
   }
